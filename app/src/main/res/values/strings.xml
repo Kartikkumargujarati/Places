@@ -1,4 +1,9 @@
+<!--
+  ~ Created by Kartik Kumar Gujarati on 10/19/19 12:38 PM
+  ~ Copyright (c) 2019. All rights reserved.
+  -->
+
 <resources>
     <string name="app_name">Places</string>
-    <string name="title_item_detail">Item Detail</string>
+    <string name="title_search">Search</string>
 </resources>
