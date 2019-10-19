@@ -15,6 +15,9 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+    Properties props = new Properties()
+    def propFile = new File('app/keys.properties')
+    props.load(new FileInputStream(propFile))
     defaultConfig {
         applicationId "com.kartik.places"
         minSdkVersion 21
@@ -24,9 +27,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        // using same keys for release and debug builds
         release {
+            buildConfigField "String", "CLIENT_ID", props['client_id']
+            buildConfigField "String", "CLIENT_SECRET", props['client_secret']
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "String", "CLIENT_ID", props['client_id']
+            buildConfigField "String", "CLIENT_SECRET", props['client_secret']
         }
     }
 }

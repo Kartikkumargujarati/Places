@@ -23,7 +23,8 @@ data class Venue(
     val id: String,
     val location: Location,
     val name: String,
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+    var isFavoriteLoading: Boolean = false
 )
 
 data class Category(
