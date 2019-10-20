@@ -10,7 +10,7 @@ import com.kartik.places.BuildConfig
 import com.kartik.places.data.local.VenueDao
 import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
-import com.kartik.places.model.VenueList
+import com.kartik.places.model.VenueDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,16 +30,37 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
                 val response = venueRemoteService.getRemoteService().searchVenues(searchKey, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
                 if (response.isSuccessful && response.code() == 200) {
                     val venues = response.body()!!.response.venues
-                    returnData(venues, result, Status.SUCCESS)
+                    returnListData(venues, result, Status.SUCCESS)
                 } else {
                     // handle error
-                    returnData(result = result, status = Status.ERROR)
+                    returnListData(result = result, status = Status.ERROR)
                 }
             } catch (exception: Exception) {
                 // handle error
-                returnData(result = result, status = Status.ERROR)
+                returnListData(result = result, status = Status.ERROR)
             }
         }
+    }
+
+    // Get VenueDetails from a given venue
+    fun getVenueDetails(venue: Venue, result: MutableLiveData<Resource<Venue>>) {
+        result.value = Resource.loading(null)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = venueRemoteService.getRemoteService().getVenueDetails(venue.id, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
+                if (response.isSuccessful && response.code() == 200) {
+                    venue.clone(response.body()!!.response.venue)
+                    returnDetailsData(venue, result, Status.SUCCESS)
+                } else {
+                    // handle error
+                    returnDetailsData(result = result, status = Status.ERROR)
+                }
+            } catch (exception: Exception) {
+                // handle error
+                returnDetailsData(result = result, status = Status.ERROR)
+            }
+        }
+
     }
 
     // Favorite or un-favorite a venue and update the object appropriately. Used from Search List
@@ -50,15 +71,16 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
                 venue.isFavoriteLoading = false
                 //if already favorited, un-favorite. If not already favorited, favorite it.
                 if (!venue.isFavorite) {
-                    venue.isFavorite = true
                     venueDao.addVenueToFavorites(venue)
+                    venue.isFavorite = true
                 } else {
-                    venue.isFavorite = false
                     venueDao.removeVenueFromFavorites(venue)
+                    venue.isFavorite = false
                 }
                 withContext(Dispatchers.Main) {
                     result.value = Resource.success(venue)
                 }
+
             } catch (exception: Exception) {
                 withContext(Dispatchers.Main) { result.value = Resource.error("Could not favorite a Venue", venue) }
             }
@@ -66,7 +88,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
     }
 
     // Helper function
-    private suspend fun returnData(venueList: List<Venue>? = null, result: MutableLiveData<Resource<List<Venue>>>, status: Status) {
+    private suspend fun returnListData(venueList: List<Venue>? = null, result: MutableLiveData<Resource<List<Venue>>>, status: Status) {
         val favVenueList = venueDao.getAllFavoriteVenues()
         if (venueList != null) {
             for (venue in venueList) {
@@ -81,6 +103,26 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
             Status.SUCCESS -> {
                 // sorting venues in ascending order of distance.
                 withContext(Dispatchers.Main) { result.value = Resource.success(venueList?.sortedBy { it.location?.distance }) }
+            }
+            Status.ERROR -> {
+                withContext(Dispatchers.Main) { result.value = Resource.error("Unable to load data") }
+            }
+        }
+    }
+
+    private suspend fun returnDetailsData(venue: Venue? = null, result: MutableLiveData<Resource<Venue>>, status: Status) {
+        val favVenueList = venueDao.getAllFavoriteVenues()
+        if (venue != null) {
+            for (favVenue in favVenueList) {
+                if (venue.id == favVenue.id) {
+                    venue.isFavorite = true
+                }
+            }
+
+        }
+        when(status) {
+            Status.SUCCESS -> {
+                withContext(Dispatchers.Main) { result.value = Resource.success(venue) }
             }
             Status.ERROR -> {
                 withContext(Dispatchers.Main) { result.value = Resource.error("Unable to load data") }
