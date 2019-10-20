@@ -5,6 +5,7 @@
 
 package com.kartik.places.ui.venueList
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,7 @@ import com.kartik.places.data.VenueRepository
 import com.kartik.places.data.local.VenueRoomDb
 import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
+import com.kartik.places.ui.venueDetails.VenueDetailsActivity
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.list_content.*
 import kotlinx.coroutines.CoroutineScope
@@ -159,6 +161,6 @@ class VenueListActivity : AppCompatActivity() {
     }
 
     private fun startDetailsActivity(venue: Venue) {
-
+        startActivity(Intent(this, VenueDetailsActivity::class.java))
     }
 }

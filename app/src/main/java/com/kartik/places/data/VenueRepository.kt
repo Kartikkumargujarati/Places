@@ -79,6 +79,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
         }
         when(status) {
             Status.SUCCESS -> {
+                // sorting venues in ascending order of distance.
                 withContext(Dispatchers.Main) { result.value = Resource.success(venueList?.sortedBy { it.location?.distance }) }
             }
             Status.ERROR -> {

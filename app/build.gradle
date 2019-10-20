@@ -25,18 +25,14 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "google_maps_key", props["GOOGLE_MAPS_API_KEY"]
+        buildConfigField "String", "CLIENT_ID", props['client_id']
+        buildConfigField "String", "CLIENT_SECRET", props['client_secret']
     }
     buildTypes {
-        // using same keys for release and debug builds
         release {
-            buildConfigField "String", "CLIENT_ID", props['client_id']
-            buildConfigField "String", "CLIENT_SECRET", props['client_secret']
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            buildConfigField "String", "CLIENT_ID", props['client_id']
-            buildConfigField "String", "CLIENT_SECRET", props['client_secret']
         }
     }
 }
@@ -51,7 +47,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    //lifecycle
+    // Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    // Lifecycle
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
     // Retrofit
