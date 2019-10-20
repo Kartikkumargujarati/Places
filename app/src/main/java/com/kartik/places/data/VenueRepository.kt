@@ -23,13 +23,14 @@ import java.lang.Exception
 class VenueRepository(private val venueDao: VenueDao, private val venueRemoteService: VenueRemoteServiceImpl) {
 
     // Get Venues from remote server given a search keyword.
-    fun getVenuesFromSearch(searchKey: String, result: MutableLiveData<Resource<VenueList>>) {
+    fun getVenuesFromSearch(searchKey: String, result: MutableLiveData<Resource<List<Venue>>>) {
         result.value = Resource.loading(null)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = venueRemoteService.getRemoteService().searchVenues(searchKey, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
                 if (response.isSuccessful && response.code() == 200) {
-                    returnData(response.body()!!, result, Status.SUCCESS)
+                    val venues = response.body()!!.response.venues
+                    returnData(venues, result, Status.SUCCESS)
                 } else {
                     // handle error
                     returnData(result = result, status = Status.ERROR)
@@ -65,10 +66,10 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
     }
 
     // Helper function
-    private suspend fun returnData(venueList: VenueList? = null, result: MutableLiveData<Resource<VenueList>>, status: Status) {
+    private suspend fun returnData(venueList: List<Venue>? = null, result: MutableLiveData<Resource<List<Venue>>>, status: Status) {
         val favVenueList = venueDao.getAllFavoriteVenues()
         if (venueList != null) {
-            for (venue in venueList.response.venues) {
+            for (venue in venueList) {
                 for (favVenue in favVenueList) {
                     if (venue.id == favVenue.id) {
                         venue.isFavorite = true
@@ -78,7 +79,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
         }
         when(status) {
             Status.SUCCESS -> {
-                withContext(Dispatchers.Main) { result.value = Resource.success(venueList) }
+                withContext(Dispatchers.Main) { result.value = Resource.success(venueList?.sortedBy { it.location?.distance }) }
             }
             Status.ERROR -> {
                 withContext(Dispatchers.Main) { result.value = Resource.error("Unable to load data") }

@@ -18,10 +18,10 @@ data class Response(
 
 @Entity(tableName = "venue_table")
 data class Venue(
-    val categories: List<Category>,
+    val categories: List<Category>?,
     @PrimaryKey
     val id: String,
-    val location: Location,
+    val location: Location? = null,
     val name: String,
     var isFavorite: Boolean = false,
     var isFavoriteLoading: Boolean = false
@@ -30,7 +30,11 @@ data class Venue(
 data class Category(
     val icon: Icon,
     val name: String
-)
+) {
+    fun getIconUrl(): String {
+        return "${icon.prefix}88${icon.suffix}"
+    }
+}
 
 data class Icon(
     val prefix: String,
@@ -38,5 +42,9 @@ data class Icon(
 )
 
 data class Location(
-    val distance: Int
-)
+    val distance: Int = -1
+) {
+    fun getDistanceInMiles(): String {
+        return String.format("%.2f mi", distance / 1609.344)
+    }
+}
