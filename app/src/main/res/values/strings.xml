@@ -6,4 +6,6 @@
 <resources>
     <string name="app_name">Places</string>
     <string name="title_search">Search</string>
+    <string name="search_venue">Search for a place you want to explore in Seattle.</string>
+    <string name="no_search_venues_found">Could not find a venue to match your search.</string>
 </resources>
