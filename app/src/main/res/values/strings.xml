@@ -8,4 +8,5 @@
     <string name="title_search">Search</string>
     <string name="search_venue">Search for a place you want to explore in Seattle.</string>
     <string name="no_search_venues_found">Could not find a venue to match your search.</string>
+    <string name="no_venue_details_found">Could not find details for this venue.</string>
 </resources>
