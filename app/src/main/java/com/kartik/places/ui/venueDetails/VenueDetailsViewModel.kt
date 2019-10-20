@@ -13,6 +13,9 @@ import com.kartik.places.data.Resource
 import com.kartik.places.data.VenueRepository
 import com.kartik.places.model.Venue
 
+/**
+ * A ViewModel for [VenueDetailsActivity]
+ */
 class VenueDetailsViewModel(private val repository: VenueRepository): ViewModel() {
 
     private val _venue = MutableLiveData<Resource<Venue>>()

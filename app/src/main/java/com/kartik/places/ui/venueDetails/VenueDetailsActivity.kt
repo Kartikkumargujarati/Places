@@ -31,7 +31,10 @@ import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
 import kotlinx.android.synthetic.main.layout_favorite_iv.*
 
-
+/**
+ * The [VenueDetailsActivity] represents a single Venue detail screen which displays
+ * a map on top half of the screen and venue details on the bottom half.
+ */
 class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -123,6 +126,8 @@ class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         venue_website_tv.text = venue.url
         updateFavIcon(venue)
         venue_fav_iv.setOnClickListener { viewModel.favoriteAVenue(venue) }
+        val venueLocation = venue.location?.lat?.let { LatLng(it, venue.location.lng) }
+        mMap.addMarker(MarkerOptions().position(venueLocation!!).title(venue.name))
     }
 
     private fun updateFavIcon(venue: Venue) {
@@ -160,12 +165,14 @@ class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         mMap = map
-        // Add a marker in Sydney and move the camera
+        // Add a marker in center of seattle and move the camera
         val seattle = LatLng(47.6062,-122.3321)
-        mMap.addMarker(MarkerOptions().position(seattle).title("Marker in Seattle"))
-        mMap.setMinZoomPreference(10.0f)
+        mMap.addMarker(MarkerOptions().position(seattle).title("Seattle"))
+        mMap.setMinZoomPreference(8.0f)
         mMap.setMaxZoomPreference(18.0f)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
+        val zoom = CameraUpdateFactory.zoomTo(10f)
+        mMap.animateCamera(zoom)
     }
 
     companion object {

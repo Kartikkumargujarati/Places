@@ -10,7 +10,6 @@ import com.kartik.places.BuildConfig
 import com.kartik.places.data.local.VenueDao
 import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
-import com.kartik.places.model.VenueDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

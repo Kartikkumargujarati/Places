@@ -10,7 +10,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
-
+/**
+ * Data class for Venue List
+ */
 data class VenueList(
     val response: Response
 )
@@ -34,6 +36,10 @@ data class Venue(
     var rating: Double? = null,
     var url: String? = ""
 ) : Parcelable {
+
+    /*
+    * Helper function to clone some of the properties.
+    */
     fun clone(venue: Venue) {
         contact = venue.contact
         hours = venue.hours
@@ -68,6 +74,10 @@ data class Location(
     val postalCode: String,
     val state: String
 ) : Parcelable {
+
+    /*
+    * Converting distance from meters to miles and returning as readable string.
+    */
     fun getDistanceInMiles(): String {
         return String.format("%.2f mi", distance / 1609.344)
     }

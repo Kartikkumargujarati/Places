@@ -5,6 +5,9 @@
 
 package com.kartik.places.model
 
+/**
+ * Data class for Venue Details
+ */
 data class VenueDetails(
     val response: DetailedResponse
  )

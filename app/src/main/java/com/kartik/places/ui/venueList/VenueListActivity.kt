@@ -32,6 +32,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * The [VenueListActivity] represents a list of venues that are retrieved from the FourSquaye API.
+ */
 class VenueListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: VenueListViewModel
@@ -49,25 +52,6 @@ class VenueListActivity : AppCompatActivity() {
         viewModel.venueList.observe(::getLifecycle, ::updateList)
         viewModel.favVenue.observe(::getLifecycle, ::updateFavoriteVenue)
         setupRecyclerView(item_list)
-    }
-
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.setHasFixedSize(true)
-        val layoutManager  = GridLayoutManager(this, resources.getInteger(R.integer.list_coloum_count))
-        recyclerView.layoutManager = layoutManager
-        adapter = VenueListAdapter(ArrayList(), object : VenueListAdapter.OnClickListener {
-            override fun onVenueClick(venue: Venue) {
-                // navigate to details
-                startDetailsActivity(venue)
-            }
-
-            override fun onVenueFav(venue: Venue) {
-                // fav a venue
-                viewModel.favoriteAVenue(venue)
-            }
-
-        })
-        recyclerView.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -97,6 +81,25 @@ class VenueListActivity : AppCompatActivity() {
     }
 
     /********************       Helper methods        *****************/
+
+    private fun setupRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.setHasFixedSize(true)
+        val layoutManager  = GridLayoutManager(this, resources.getInteger(R.integer.list_coloum_count))
+        recyclerView.layoutManager = layoutManager
+        adapter = VenueListAdapter(ArrayList(), object : VenueListAdapter.OnClickListener {
+            override fun onVenueClick(venue: Venue) {
+                // navigate to details
+                startDetailsActivity(venue)
+            }
+
+            override fun onVenueFav(venue: Venue) {
+                // fav a venue
+                viewModel.favoriteAVenue(venue)
+            }
+
+        })
+        recyclerView.adapter = adapter
+    }
 
     private fun setupSearchView(searchView: SearchView) {
         var searchQuery = ""
