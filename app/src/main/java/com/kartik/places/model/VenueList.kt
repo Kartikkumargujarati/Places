@@ -31,8 +31,8 @@ data class Venue(
     val name: String,
     var isFavorite: Boolean = false,
     var isFavoriteLoading: Boolean = false,
-    var contact: Contact? = null,
-    var hours: Hours? = null,
+    var contact: Contact? = Contact(),
+    var hours: Hours? = Hours(),
     var rating: Double? = null,
     var url: String? = ""
 ) : Parcelable {
@@ -51,7 +51,7 @@ data class Venue(
 @Parcelize
 data class Category(
     val icon: Icon,
-    val name: String
+    val name: String = ""
 ) : Parcelable {
     fun getIconUrl(): String {
         return "${icon.prefix}88${icon.suffix}"
@@ -66,29 +66,29 @@ data class Icon(
 
 @Parcelize
 data class Location(
-    val distance: Int = -1,
-    val address: String?,
-    val city: String,
-    val lat: Double,
-    val lng: Double,
-    val postalCode: String,
-    val state: String
+    val distance: Int? = -1,
+    val address: String? = "",
+    val city: String? = "",
+    val lat: Double?,
+    val lng: Double?,
+    val postalCode: String? = "",
+    val state: String? = ""
 ) : Parcelable {
 
     /*
     * Converting distance from meters to miles and returning as readable string.
     */
     fun getDistanceInMiles(): String {
-        return String.format("%.2f mi", distance / 1609.344)
+        return String.format("%.2f mi", distance?.div(1609.344))
     }
 }
 
 @Parcelize
 data class Contact(
-    val formattedPhone: String?
+    val formattedPhone: String? = ""
 ) : Parcelable
 
 @Parcelize
 data class Hours(
-    val status: String?
+    val status: String? = ""
 ) : Parcelable

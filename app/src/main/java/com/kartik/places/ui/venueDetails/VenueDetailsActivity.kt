@@ -126,8 +126,10 @@ class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         venue_website_tv.text = venue.url
         updateFavIcon(venue)
         venue_fav_iv.setOnClickListener { viewModel.favoriteAVenue(venue) }
-        val venueLocation = venue.location?.lat?.let { LatLng(it, venue.location.lng) }
-        mMap.addMarker(MarkerOptions().position(venueLocation!!).title(venue.name))
+        if (venue.location?.lat != null && venue.location.lng != null) {
+            val venueLocation = LatLng(venue.location.lat, venue.location.lng)
+            mMap.addMarker(MarkerOptions().position(venueLocation).title(venue.name))
+        }
     }
 
     private fun updateFavIcon(venue: Venue) {
