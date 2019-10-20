@@ -24,6 +24,7 @@ import com.kartik.places.data.local.VenueRoomDb
 import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
 import com.kartik.places.ui.venueDetails.VenueDetailsActivity
+import com.kartik.places.ui.venueDetails.VenueDetailsActivity.Companion.ARG_VENUE
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.list_content.*
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,8 @@ class VenueListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: VenueListViewModel
     private lateinit var adapter: VenueListAdapter
+    private val DETAILS_REQUEST_CODE = 101
+    private var venue: Venue? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,18 @@ class VenueListActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_search -> { return true }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            DETAILS_REQUEST_CODE -> {
+                if (resultCode == RESULT_OK) {
+                    val updatedVenue = data?.getParcelableExtra<Venue>(ARG_VENUE)
+                    venue?.isFavorite = updatedVenue?.isFavorite!!
+                    adapter.notifyDataSetChanged()
+                }
+            }
         }
     }
 
@@ -161,6 +176,10 @@ class VenueListActivity : AppCompatActivity() {
     }
 
     private fun startDetailsActivity(venue: Venue) {
-        startActivity(Intent(this, VenueDetailsActivity::class.java))
+        this.venue = venue
+        val intent = Intent(this, VenueDetailsActivity::class.java).apply {
+            putExtra(ARG_VENUE, venue)
+        }
+        startActivityForResult(intent, DETAILS_REQUEST_CODE)
     }
 }

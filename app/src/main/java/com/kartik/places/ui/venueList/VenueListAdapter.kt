@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kartik.places.R
 import com.kartik.places.model.Venue
+import kotlinx.android.synthetic.main.layout_favorite_iv.view.*
 import kotlinx.android.synthetic.main.list_item_content.view.*
 
 class VenueListAdapter(private var venues: List<Venue>, private val onClickListener: OnClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
