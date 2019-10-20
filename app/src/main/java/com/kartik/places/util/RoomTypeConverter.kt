@@ -8,6 +8,8 @@ package com.kartik.places.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.kartik.places.model.Category
+import com.kartik.places.model.Contact
+import com.kartik.places.model.Hours
 import com.kartik.places.model.Location
 
 class RoomTypeConverter {
@@ -29,7 +31,27 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun locationToString(location: Location): String? {
+    fun locationToString(location: Location?): String? {
         return Gson().toJson(location)
+    }
+
+    @TypeConverter
+    fun stringToContact(value: String): Contact? {
+        return Gson().fromJson(value, Contact::class.java)
+    }
+
+    @TypeConverter
+    fun contactToString(contact: Contact?): String? {
+        return Gson().toJson(contact)
+    }
+
+    @TypeConverter
+    fun stringToHours(value: String): Hours? {
+        return Gson().fromJson(value, Hours::class.java)
+    }
+
+    @TypeConverter
+    fun hoursToString(hours: Hours?): String? {
+        return Gson().toJson(hours)
     }
 }

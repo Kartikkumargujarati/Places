@@ -57,31 +57,7 @@
 
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/venue_fav_fl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:padding="10dp">
-
-            <ProgressBar
-                android:id="@+id/venue_fav_pb"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:indeterminate="true"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-
-            <ImageView
-                android:id="@+id/venue_fav_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorite_empty"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="@drawable/button_foreground"/>
-        </FrameLayout>
+        <include layout="@layout/layout_favorite_iv"/>
 
     </RelativeLayout>
 
