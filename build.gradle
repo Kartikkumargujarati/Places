@@ -31,4 +31,5 @@ task clean(type: Delete) {
 ext {
     roomDBVersion = '2.2.0'
     coroutines = '1.3.2'
+    lifecycleVersion = '2.2.0'
 }

@@ -54,7 +54,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     // Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
