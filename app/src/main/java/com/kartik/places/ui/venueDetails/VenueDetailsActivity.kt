@@ -167,12 +167,12 @@ class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         mMap = map
-        // Add a marker in center of seattle and move the camera
-        val seattle = LatLng(47.6062,-122.3321)
-        mMap.addMarker(MarkerOptions().position(seattle).title("Seattle"))
+        // Add a marker in center of Austin and move the camera
+        val austin = LatLng(30.274636,-97.740399)
+        mMap.addMarker(MarkerOptions().position(austin).title("Austin"))
         mMap.setMinZoomPreference(8.0f)
         mMap.setMaxZoomPreference(18.0f)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(austin))
         val zoom = CameraUpdateFactory.zoomTo(10f)
         mMap.animateCamera(zoom)
     }

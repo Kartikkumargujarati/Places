@@ -1,9 +1,9 @@
 # Places - powered by FourSquare API
 
 
-This app allows you to search for places around the Seattle, WA area and used the Foursquare API. You can view search results in a list; and view the individual details of each search result.
-Each list item is a cardview containing details about a place like name, category, distance from center of Seattle. There is also a button to favorite and un-favorite a place (stored in local DB - Room).
-On the details screen, there is a mapview within the collapsible toolbar with two markers(center of Seattle, and the current venue).
+This app allows you to search for places around the Austin, TX area and used the Foursquare API. You can view search results in a list; and view the individual details of each search result.
+Each list item is a cardview containing details about a place like name, category, distance from center of Austin. There is also a button to favorite and un-favorite a place (stored in local DB - Room).
+On the details screen, there is a mapview within the collapsible toolbar with two markers(center of Austin, and the current venue).
 The details screen also provides details like rating, address, phone number and website information.
 
 ### App Architecture:
