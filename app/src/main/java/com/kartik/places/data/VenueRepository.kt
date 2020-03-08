@@ -60,26 +60,20 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
     }
 
     // Favorite or un-favorite a venue and update the object appropriately. Used from Search List
-    fun favoriteUnfavoriteAVenue(venue: Venue, result: MutableLiveData<Resource<Venue>>) {
-        result.value = Resource.loading(venue)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                venue.isFavoriteLoading = false
-                //if already favorited, un-favorite. If not already favorited, favorite it.
-                if (!venue.isFavorite) {
-                    venueDao.addVenueToFavorites(venue)
-                    venue.isFavorite = true
-                } else {
-                    venueDao.removeVenueFromFavorites(venue)
-                    venue.isFavorite = false
-                }
-                withContext(Dispatchers.Main) {
-                    result.value = Resource.success(venue)
-                }
-
-            } catch (exception: Exception) {
-                withContext(Dispatchers.Main) { result.value = Resource.error("Could not favorite a Venue", venue) }
+    fun favoriteUnfavoriteAVenue(venue: Venue): Resource<Venue> {
+        return try {
+            venue.isFavoriteLoading = false
+            //if already favorited, un-favorite. If not already favorited, favorite it.
+            if (!venue.isFavorite) {
+                venueDao.addVenueToFavorites(venue)
+                venue.isFavorite = true
+            } else {
+                venueDao.removeVenueFromFavorites(venue)
+                venue.isFavorite = false
             }
+            Resource.success(venue)
+        } catch (exception: Exception) {
+            Resource.error("Could not favorite a Venue", venue)
         }
     }
 
