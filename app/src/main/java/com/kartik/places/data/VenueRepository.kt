@@ -5,15 +5,10 @@
 
 package com.kartik.places.data
 
-import androidx.lifecycle.MutableLiveData
 import com.kartik.places.BuildConfig
 import com.kartik.places.data.local.VenueDao
 import com.kartik.places.data.remote.VenueRemoteServiceImpl
 import com.kartik.places.model.Venue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 /*
@@ -39,24 +34,20 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
     }
 
     // Get VenueDetails from a given venue
-    fun getVenueDetails(venue: Venue, result: MutableLiveData<Resource<Venue>>) {
-        result.value = Resource.loading(null)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = venueRemoteService.getRemoteService().getVenueDetails(venue.id, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
-                if (response.isSuccessful && response.code() == 200) {
-                    venue.clone(response.body()!!.response.venue)
-                    returnDetailsData(venue, result, Status.SUCCESS)
-                } else {
-                    // handle error
-                    returnDetailsData(result = result, status = Status.ERROR)
-                }
-            } catch (exception: Exception) {
+    suspend fun getVenueDetails(venue: Venue): Resource<Venue> {
+        return try {
+            val response = venueRemoteService.getRemoteService().getVenueDetails(venue.id, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
+            if (response.isSuccessful && response.code() == 200) {
+                venue.clone(response.body()!!.response.venue)
+                returnDetailsData(venue)
+            } else {
                 // handle error
-                returnDetailsData(result = result, status = Status.ERROR)
+                Resource.error("Unable to load data")
             }
+        } catch (exception: Exception) {
+            // handle error
+            Resource.error("Unable to load data")
         }
-
     }
 
     // Favorite or un-favorite a venue and update the object appropriately. Used from Search List
@@ -92,7 +83,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
         return Resource.success(venueList?.sortedBy { it.location?.distance })
     }
 
-    private suspend fun returnDetailsData(venue: Venue? = null, result: MutableLiveData<Resource<Venue>>, status: Status) {
+    private fun returnDetailsData(venue: Venue? = null): Resource<Venue> {
         val favVenueList = venueDao.getAllFavoriteVenues()
         if (venue != null) {
             for (favVenue in favVenueList) {
@@ -100,15 +91,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
                     venue.isFavorite = true
                 }
             }
-
         }
-        when(status) {
-            Status.SUCCESS -> {
-                withContext(Dispatchers.Main) { result.value = Resource.success(venue) }
-            }
-            Status.ERROR -> {
-                withContext(Dispatchers.Main) { result.value = Resource.error("Unable to load data") }
-            }
-        }
+        return Resource.success(venue)
     }
 }

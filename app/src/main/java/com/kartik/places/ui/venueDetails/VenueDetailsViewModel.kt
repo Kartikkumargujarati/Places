@@ -26,7 +26,10 @@ class VenueDetailsViewModel(private val repository: VenueRepository): ViewModel(
         get() = _favVenue
 
     fun getVenueDetails(venue: Venue) {
-        repository.getVenueDetails(venue, _venue)
+        _venue.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _venue.postValue(repository.getVenueDetails(venue))
+        }
     }
 
     fun favoriteAVenue(venue: Venue) {
