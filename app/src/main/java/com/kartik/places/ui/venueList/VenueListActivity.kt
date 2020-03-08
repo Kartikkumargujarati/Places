@@ -5,6 +5,7 @@
 
 package com.kartik.places.ui.venueList
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -13,7 +14,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kartik.places.R
@@ -48,7 +49,7 @@ class VenueListActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val venueDao = VenueRoomDb.getDatabase(applicationContext).venueDao()
         val repository = VenueRepository(venueDao, VenueRemoteServiceImpl())
-        viewModel = ViewModelProviders.of(this, VenueListViewModelFactory(repository))[VenueListViewModel::class.java]
+        viewModel = ViewModelProvider(this, VenueListViewModelFactory(repository))[VenueListViewModel::class.java]
         viewModel.venueList.observe(::getLifecycle, ::updateList)
         viewModel.favVenue.observe(::getLifecycle, ::updateFavoriteVenue)
         setupRecyclerView(item_list)
@@ -68,6 +69,7 @@ class VenueListActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             DETAILS_REQUEST_CODE -> {
@@ -136,7 +138,7 @@ class VenueListActivity : AppCompatActivity() {
     }
 
     private fun submitQuery(query: String) {
-        if (query.isNullOrEmpty()) {
+        if (query.isEmpty()) {
             adapter.setVenues(ArrayList())
             empty_search_tv.visibility = View.VISIBLE
             empty_search_tv.text = resources.getText(R.string.search_venue)

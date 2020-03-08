@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.kartik.places.R
@@ -58,7 +58,7 @@ class VenueDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val venueDao = VenueRoomDb.getDatabase(applicationContext).venueDao()
         val repository = VenueRepository(venueDao, VenueRemoteServiceImpl())
-        viewModel = ViewModelProviders.of(this, VenueDetailsViewModelFactory(repository))[VenueDetailsViewModel::class.java]
+        viewModel = ViewModelProvider(this, VenueDetailsViewModelFactory(repository))[VenueDetailsViewModel::class.java]
         viewModel.venue.observe(::getLifecycle, ::updateDetails)
         viewModel.favVenue.observe(::getLifecycle, ::updateFavoriteVenue)
     }
