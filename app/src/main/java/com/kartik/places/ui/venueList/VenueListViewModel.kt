@@ -33,7 +33,10 @@ class VenueListViewModel(private val repository: VenueRepository): ViewModel() {
     }
 
     fun favoriteAVenue(venue: Venue) {
-        repository.favoriteUnfavoriteAVenue(venue, _favVenue)
+        _favVenue.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _favVenue.postValue(repository.favoriteUnfavoriteAVenue(venue))
+        }
     }
 }
 

@@ -172,6 +172,7 @@ class VenueListActivity : AppCompatActivity() {
             }
             Status.ERROR -> {
                 resource.data?.isFavoriteLoading = false
+                Toast.makeText(this, resource.message, Toast.LENGTH_LONG).show()
             }
             Status.LOADING -> resource.data?.isFavoriteLoading = true
         }

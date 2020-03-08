@@ -5,13 +5,12 @@
 
 package com.kartik.places.ui.venueDetails
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.kartik.places.data.Resource
 import com.kartik.places.data.VenueRepository
 import com.kartik.places.model.Venue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for [VenueDetailsActivity]
@@ -31,7 +30,10 @@ class VenueDetailsViewModel(private val repository: VenueRepository): ViewModel(
     }
 
     fun favoriteAVenue(venue: Venue) {
-        repository.favoriteUnfavoriteAVenue(venue, _favVenue)
+        _favVenue.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _favVenue.postValue(repository.favoriteUnfavoriteAVenue(venue))
+        }
     }
 }
 
