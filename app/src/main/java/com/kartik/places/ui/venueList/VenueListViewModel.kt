@@ -5,13 +5,12 @@
 
 package com.kartik.places.ui.venueList
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.kartik.places.data.Resource
 import com.kartik.places.data.VenueRepository
 import com.kartik.places.model.Venue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * A ViewModel for [VenueListActivity]
@@ -27,7 +26,10 @@ class VenueListViewModel(private val repository: VenueRepository): ViewModel() {
         get() = _favVenue
 
     fun getVenues(searchKey: String) {
-        return repository.getVenuesFromSearch(searchKey, _venueList)
+        _venueList.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _venueList.postValue(repository.getVenuesFromSearch(searchKey))
+        }
     }
 
     fun favoriteAVenue(venue: Venue) {

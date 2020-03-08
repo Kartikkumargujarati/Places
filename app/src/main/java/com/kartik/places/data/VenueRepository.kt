@@ -22,22 +22,19 @@ import java.lang.Exception
 class VenueRepository(private val venueDao: VenueDao, private val venueRemoteService: VenueRemoteServiceImpl) {
 
     // Get Venues from remote server given a search keyword.
-    fun getVenuesFromSearch(searchKey: String, result: MutableLiveData<Resource<List<Venue>>>) {
-        result.value = Resource.loading(null)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = venueRemoteService.getRemoteService().searchVenues(searchKey, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
-                if (response.isSuccessful && response.code() == 200) {
-                    val venues = response.body()!!.response.venues
-                    returnListData(venues, result, Status.SUCCESS)
-                } else {
-                    // handle error
-                    returnListData(result = result, status = Status.ERROR)
-                }
-            } catch (exception: Exception) {
+    suspend fun getVenuesFromSearch(searchKey: String): Resource<List<Venue>> {
+        return try {
+            val response = venueRemoteService.getRemoteService().searchVenues(searchKey, BuildConfig.CLIENT_SECRET, BuildConfig.CLIENT_ID)
+            if (response.isSuccessful && response.code() == 200) {
+                val venues = response.body()!!.response.venues
+                returnListData(venues)
+            } else {
                 // handle error
-                returnListData(result = result, status = Status.ERROR)
+                Resource.error("Unable to load data")
             }
+        } catch (exception: Exception) {
+            // handle error
+            Resource.error("Unable to load data")
         }
     }
 
@@ -87,7 +84,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
     }
 
     // Helper function
-    private suspend fun returnListData(venueList: List<Venue>? = null, result: MutableLiveData<Resource<List<Venue>>>, status: Status) {
+    private fun returnListData(venueList: List<Venue>? = null): Resource<List<Venue>> {
         val favVenueList = venueDao.getAllFavoriteVenues()
         if (venueList != null) {
             for (venue in venueList) {
@@ -98,15 +95,7 @@ class VenueRepository(private val venueDao: VenueDao, private val venueRemoteSer
                 }
             }
         }
-        when(status) {
-            Status.SUCCESS -> {
-                // sorting venues in ascending order of distance.
-                withContext(Dispatchers.Main) { result.value = Resource.success(venueList?.sortedBy { it.location?.distance }) }
-            }
-            Status.ERROR -> {
-                withContext(Dispatchers.Main) { result.value = Resource.error("Unable to load data") }
-            }
-        }
+        return Resource.success(venueList?.sortedBy { it.location?.distance })
     }
 
     private suspend fun returnDetailsData(venue: Venue? = null, result: MutableLiveData<Resource<Venue>>, status: Status) {
